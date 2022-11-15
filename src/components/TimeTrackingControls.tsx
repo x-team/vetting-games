@@ -1,14 +1,20 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import useTimeTracking from "@lib/time-tracking/useTimeTracking";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import useTimeTrackingBugged from "@lib/time-tracking/bugged/useTimeTracking";
 import { useEffect } from "react";
 import clsx from "clsx";
 import formatSecondsToTime from "@utils/formatSecondsToTime";
 
+const BUGGED = import.meta.env.VITE_BUGGED_TIME_TRACKING === "true";
 const initialTracks = JSON.parse(localStorage.getItem("tracks") || "{}");
 
 const TimeTrackingControls = () => {
-  const { state, task, tracking, stop } = useTimeTracking(initialTracks);
+  const { state, task, tracking, stop } = (
+    BUGGED ? useTimeTrackingBugged : useTimeTracking
+  )(initialTracks);
   const recordTime = (state["away"] || 0) + (state["active"] || 0);
 
   useEffect(() => {
