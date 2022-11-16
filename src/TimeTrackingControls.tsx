@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useTimeTracking } from "./lib/time-traking";
+import { useTimeTracking } from "./lib/time-tracking";
 
 const TimeTrackingControls = () => {
   const { time, isRunning, task, track, tracks, stop } = useTimeTracking();
@@ -9,31 +9,31 @@ const TimeTrackingControls = () => {
   }, [time]);
 
   return (
-    <div className="flex flex-col items-center border-solid border border-gray-300 rounded p-4">
-      <h2 className="text-2xl mb-10">Timer ({isRunning ? task : "Stopped"})</h2>
-      <div className="flex flex-col items-center mb-10">
-        <h3 className="text-2xl mb-4">{time} secs</h3>
+    <div className="flex flex-col items-center rounded border border-solid border-gray-300 p-4">
+      <h2 className="mb-10 text-2xl">Timer ({isRunning ? task : "Stopped"})</h2>
+      <div className="mb-10 flex flex-col items-center">
+        <h3 className="mb-4 text-2xl">{time} secs</h3>
         <div>
           <button
-            className="ml-4 border bg-sky-500 hover:bg-sky-700 text-white px-4 py-1 rounded-full font-medium"
+            className="ml-4 rounded-full border bg-sky-500 px-4 py-1 font-medium text-white hover:bg-sky-700"
             onClick={() => track("Working 😅")}
           >
             Working 😅
           </button>
           <button
-            className="ml-4 border bg-sky-500 hover:bg-sky-700 text-white px-4 py-1 rounded-full font-medium"
+            className="ml-4 rounded-full border bg-sky-500 px-4 py-1 font-medium text-white hover:bg-sky-700"
             onClick={() => track("Idle 👻")}
           >
             Idle 👻
           </button>
           <button
-            className="ml-4 border bg-sky-500 hover:bg-sky-700 text-white px-4 py-1 rounded-full font-medium"
+            className="ml-4 rounded-full border bg-sky-500 px-4 py-1 font-medium text-white hover:bg-sky-700"
             onClick={() => track("Break 🚽")}
           >
             Break 🚽
           </button>
           <button
-            className="ml-4 border bg-sky-500 hover:bg-sky-700 text-white px-4 py-1 rounded-full font-medium"
+            className="ml-4 rounded-full border bg-sky-500 px-4 py-1 font-medium text-white hover:bg-sky-700"
             onClick={() => stop()}
           >
             Stop 🛑
