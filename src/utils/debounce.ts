@@ -6,7 +6,7 @@ export default function debounce<T extends Function>(func: T, timeout = 300) {
       clearTimeout(timer);
     }
 
-    timer = setTimeout(() => {
+    timer = window.setTimeout(() => {
       func(...args);
     }, timeout);
   };
