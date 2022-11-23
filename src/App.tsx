@@ -1,18 +1,8 @@
-import { TimeTrackingProvider } from "./lib/time-tracking";
-import TimeTrackingControls from "./TimeTrackingControls";
-
-const initialTracks = JSON.parse(localStorage.getItem("tracks") || "{}");
+import routes from "@router/routes";
+import { RouterProvider } from "react-router-dom";
 
 function App() {
-  return (
-    <TimeTrackingProvider initialTracks={initialTracks}>
-      <div className="flex h-screen w-full flex-col items-center justify-center">
-        <h1 className="mb-4 text-4xl">Vetting Games</h1>
-
-        <TimeTrackingControls />
-      </div>
-    </TimeTrackingProvider>
-  );
+  return <RouterProvider router={routes} />;
 }
 
 export default App;

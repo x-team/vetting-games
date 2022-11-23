@@ -19,7 +19,7 @@
 You'll need some environment variables to get started. You can find a list of them in the `.env.example` file. You can copy this file to `.env` and fill in the values.
 
 ```env
-# Noting Here
+VITE_IDLE_TIMEOUT=3000
 ```
 
 ### Install Dependencies
