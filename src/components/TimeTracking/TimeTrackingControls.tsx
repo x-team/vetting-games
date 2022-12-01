@@ -1,8 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import useTimeTracking from "@lib/time-tracking/useTimeTracking";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import useTimeTrackingBugged from "@lib/time-tracking/bugged/useTimeTracking";
 import { useEffect } from "react";
 import clsx from "clsx";
@@ -22,7 +18,7 @@ const TimeTrackingControls = () => {
   }, [state]);
 
   return (
-    <div className="absolute right-5 bottom-5 flex flex-col items-center rounded border border-solid border-gray-300 bg-white p-4 shadow-md">
+    <div className="border-gray-300 absolute right-5 bottom-5 flex flex-col items-center rounded border border-solid bg-white p-4 shadow-md">
       <div className="flex items-center">
         <div
           className={clsx("mr-2 h-3 w-3 rounded-full", {
@@ -38,14 +34,14 @@ const TimeTrackingControls = () => {
         </span>
         {task === "break" || task === null ? (
           <button
-            className="ml-2 h-16 w-16 rounded-full bg-teal-500 text-white transition-colors hover:bg-teal-600"
+            className="bg-teal-500 hover:bg-teal-600 ml-2 h-16 w-16 rounded-full text-white transition-colors"
             onClick={() => tracking("active")}
           >
             Start
           </button>
         ) : (
           <button
-            className="ml-2 h-16 w-16 rounded-full bg-red-400 text-white transition-colors hover:bg-red-500"
+            className="bg-red-400 hover:bg-red-500 ml-2 h-16 w-16 rounded-full text-white transition-colors"
             onClick={() => tracking("break")}
           >
             Break
@@ -53,7 +49,7 @@ const TimeTrackingControls = () => {
         )}
         {task !== null && (
           <button
-            className="ml-2 h-16 w-16 rounded-full bg-gray-400 text-white transition-colors hover:bg-gray-500"
+            className="bg-gray-400 hover:bg-gray-500 ml-2 h-16 w-16 rounded-full text-white transition-colors"
             onClick={() => stop()}
           >
             Stop

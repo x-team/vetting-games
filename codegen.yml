@@ -8,3 +8,6 @@ generates:
     plugins: []
     presetConfig:
       gqlTagName: "gql"
+    config:
+      scalars:
+        Date: "number"
