@@ -1,0 +1,47 @@
+:root {
+  --digital-clock-digit: 0;
+}
+
+.digit-0 {
+  --digital-clock-digit: 0;
+}
+
+.digit-1 {
+  --digital-clock-digit: 1;
+}
+
+.digit-2 {
+  --digital-clock-digit: 2;
+}
+
+.digit-3 {
+  --digital-clock-digit: 3;
+}
+
+.digit-4 {
+  --digital-clock-digit: 4;
+}
+
+.digit-5 {
+  --digital-clock-digit: 5;
+}
+
+.digit-6 {
+  --digital-clock-digit: 6;
+}
+
+.digit-7 {
+  --digital-clock-digit: 7;
+}
+
+.digit-8 {
+  --digital-clock-digit: 8;
+}
+
+.digit-9 {
+  --digital-clock-digit: 9;
+}
+
+.digit {
+  transform: translateY(calc(var(--digital-clock-digit) * -60px));
+}

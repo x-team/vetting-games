@@ -3,19 +3,51 @@ import LogoutIcon from "@components/Icon/LogoutIcon";
 import clsx from "clsx";
 import { HTMLAttributes } from "react";
 import { useIsAuthenticated, useSignOut } from "react-auth-kit";
+import {
+  BreadcrumbItem,
+  Breadcrumbs,
+} from "@components/Navigation/Breadcrumbs";
+import { missionSelectionPath } from "@router/paths";
+import { useLoaderData } from "react-router-dom";
+
+interface LoaderDataWithBreadcrumbs {
+  breadcrumbs?: string[];
+}
+
+export interface BasicLayoutProps extends HTMLAttributes<HTMLDivElement> {
+  containerClassName?: string;
+}
 
 const BasicLayout = ({
   children,
   className,
+  containerClassName,
   ...props
-}: HTMLAttributes<HTMLDivElement>) => {
+}: BasicLayoutProps) => {
+  const loaderData = useLoaderData() as LoaderDataWithBreadcrumbs | undefined;
+  const { breadcrumbs } = loaderData || {};
   const signOut = useSignOut();
   const isAuthenticated = useIsAuthenticated();
 
   return (
-    <div {...props} className="bg-stone-200 flex h-screen w-screen">
-      <div className="absolute top-0 flex w-full justify-between">
-        <div className="flex"></div>
+    <div
+      {...props}
+      className={clsx(
+        "bg-stone-200 flex h-screen w-screen flex-col",
+        containerClassName
+      )}
+    >
+      <div className="static top-0 flex w-full justify-between">
+        <div className="ml-4 flex items-center text-white">
+          {breadcrumbs && (
+            <Breadcrumbs>
+              <BreadcrumbItem href={missionSelectionPath()}>
+                Home
+              </BreadcrumbItem>
+              <BreadcrumbItem>Js Level 1</BreadcrumbItem>
+            </Breadcrumbs>
+          )}
+        </div>
         {isAuthenticated() && (
           <Button
             variant="text"

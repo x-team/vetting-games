@@ -3,4 +3,4 @@ export const loginPath = () => "/login";
 export const logoutPath = () => "/logout";
 export const callbackPath = () => "/callback";
 export const missionSelectionPath = () => "/mission";
-export const gamePath = () => "/game";
+export const gamePath = (id: string) => `/game/${id}`;

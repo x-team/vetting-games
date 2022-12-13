@@ -1,7 +1,6 @@
 import GitHubIcon from "@components/Icon/GitHubIcon";
 import clsx from "clsx";
 import { useMemo } from "react";
-import { FaGithub } from "react-icons/fa";
 import Button from "./Button";
 
 export interface LoginWithGitHubButtonProps {
