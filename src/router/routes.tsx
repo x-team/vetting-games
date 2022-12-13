@@ -1,9 +1,10 @@
 /* eslint-disable react/jsx-key */
-import Callback from "@pages/Callback";
-import Login from "@pages/Login";
-import Mission from "@pages/Mission";
+import CallbackPage from "@pages/Callback";
+import GamePage from "@pages/Game";
+import LoginPage from "@pages/Login";
+import LogoutPage from "@pages/Logout";
 import MissionSelection from "@pages/MissionSelection";
-import TimeTracking from "@pages/TimeTracking";
+import TimeTrackingPage from "@pages/TimeTracking";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -13,8 +14,9 @@ import {
 import AnonymousRoute from "./AnonymousRoute";
 import {
   callbackPath,
+  gamePath,
   loginPath,
-  missionPath,
+  logoutPath,
   missionSelectionPath,
   timeTrackingPath,
 } from "./paths";
@@ -23,14 +25,15 @@ import ProtectedRoute from "./ProtectedRoute";
 export default createBrowserRouter(
   createRoutesFromElements([
     <Route path="/" element={<Navigate to={loginPath()} />} />,
-    <Route path={timeTrackingPath()} element={<TimeTracking />} />,
+    <Route path={timeTrackingPath()} element={<TimeTrackingPage />} />,
+    <Route path={logoutPath()} element={<LogoutPage />} />,
     <Route element={<AnonymousRoute />}>
-      <Route path={loginPath()} element={<Login />} />,
+      <Route path={loginPath()} element={<LoginPage />} />,
     </Route>,
-    <Route path={callbackPath()} element={<Callback />} />,
+    <Route path={callbackPath()} element={<CallbackPage />} />,
     <Route element={<ProtectedRoute />}>
       <Route path={missionSelectionPath()} element={<MissionSelection />} />
-      <Route path={missionPath()} element={<Mission />} />
+      <Route path={gamePath()} element={<GamePage />} />
     </Route>,
   ])
 );

@@ -1,7 +1,7 @@
-import TimeTrackingControls from "@components/TimeTrackingControls";
+import TimeTrackingControls from "@components/TimeTracking/TimeTrackingControls";
 
-const TimeTracking = () => {
+const TimeTrackingPage = () => {
   return <TimeTrackingControls />;
 };
 
-export default TimeTracking;
+export default TimeTrackingPage;
