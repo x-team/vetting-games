@@ -2,7 +2,6 @@ import Card from "@components/Surface/Card";
 import LoginWithGitHubButton from "@components/Input/LoginWithGitHubButton";
 import { GITHUB_CLIENT, GITHUB_REDIRECT_URL } from "@constants";
 import BasicLayout from "@components/Layout/BasicLayout";
-import { FocusScope } from "@react-aria/focus";
 
 const LoginPage = () => {
   return (
