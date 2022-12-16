@@ -1,41 +1,86 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
+import Card from "@components/Surface/Card";
+import { ErrorCode, hasGraphQLErrorCode } from "@error";
 import { gql } from "@gql";
-import { missionPath } from "@router/paths";
-import { useNavigate } from "react-router-dom";
+import BasicLayout from "@components/Layout/BasicLayout";
+import { gamePath, missionSelectionPath } from "@router/paths";
+import { useNavigate, useParams } from "react-router-dom";
+import MissionCard from "@components/Mission/MissionCard";
+import { Mission } from "@gql/graphql";
 
-const getMissionsDocument = gql(/* GraphQL */ `
-  query missions {
-    missions {
+type MissionParams = {
+  type: string;
+};
+
+const missionDocument = gql(/* GraphQL */ `
+  query missionsByType($type: String!) {
+    missionsByType(type: $type) {
       id
       title
       type
       level
       description
+      releaseDate
     }
   }
 `);
 
-const MissionSelection = () => {
-  const navigate = useNavigate();
-  useQuery(getMissionsDocument, {
-    onCompleted: (data) => {
-      const mission = data.missions[0];
+const startMissionDocument = gql(/* GraphQL */ `
+  mutation startMission($missionId: Int!) {
+    startGame(missionId: $missionId) {
+      id
+    }
+  }
+`);
 
-      if (mission) {
-        navigate(missionPath(mission.type, mission.level));
+const MissionSelectionPage = () => {
+  const navigate = useNavigate();
+  const { type: typeParam = "js" } = useParams<MissionParams>();
+  const {
+    data: missionData,
+    loading,
+    error,
+  } = useQuery(missionDocument, {
+    variables: { type: typeParam || "" },
+    onError: () => navigate(missionSelectionPath()),
+  });
+  const [startMission] = useMutation(startMissionDocument, {
+    onCompleted: () => navigate(gamePath()),
+    onError: ({ graphQLErrors }) => {
+      if (hasGraphQLErrorCode(graphQLErrors, ErrorCode.GAME_ALREADY_STARTED)) {
+        navigate(gamePath());
       }
     },
   });
+  const missions = missionData?.missionsByType;
+  const handleStart = (mission: Mission) => {
+    startMission({ variables: { missionId: mission.id } });
+  };
+
+  if (loading) {
+    return <div>Loading</div>;
+  }
+
+  if (error) {
+    return <div>Error</div>;
+  }
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-stone-200">
-      <div className="flex w-[400px] flex-col gap-10 bg-white p-10">
-        <h1 className="text-center font-prompt text-4xl font-extrabold uppercase italic text-gray-800">
-          Loading...
-        </h1>
-      </div>
-    </div>
+    <BasicLayout className="items-center justify-center">
+      <Card className="w-[660px] gap-10">
+        <h1 className="flex justify-center text-xlarge">Select Mission</h1>
+        <div className="flex flex-col gap-2">
+          {missions?.map((mission) => (
+            <MissionCard
+              key={mission.id}
+              mission={mission}
+              onStart={handleStart}
+            />
+          ))}
+        </div>
+      </Card>
+    </BasicLayout>
   );
 };
 
-export default MissionSelection;
+export default MissionSelectionPage;

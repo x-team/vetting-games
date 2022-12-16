@@ -1,5 +1,7 @@
 import { useMutation } from "@apollo/client";
+import Card from "@components/Surface/Card";
 import { gql } from "@gql";
+import BasicLayout from "@components/Layout/BasicLayout";
 import { loginPath, missionSelectionPath } from "@router/paths";
 import getJWTPayload from "@utils/getJWTPayload";
 import { useSignIn } from "react-auth-kit";
@@ -13,7 +15,7 @@ const loginWithGithubDocument = gql(/* GraphQL */ `
   }
 `);
 
-const Callback = () => {
+const CallbackPage = () => {
   const navigate = useNavigate();
   const signIn = useSignIn();
   const [loginWithGithub, { called }] = useMutation(loginWithGithubDocument, {
@@ -45,14 +47,14 @@ const Callback = () => {
   }
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-stone-200">
-      <div className="flex w-[400px] flex-col gap-10 bg-white p-10">
-        <h1 className="text-center font-prompt text-4xl font-extrabold uppercase italic text-gray-800">
+    <BasicLayout className="items-center justify-center">
+      <Card className="w-[400px] gap-10">
+        <h1 className="flex justify-center text-center text-xlarge">
           Verifying...
         </h1>
-      </div>
-    </div>
+      </Card>
+    </BasicLayout>
   );
 };
 
-export default Callback;
+export default CallbackPage;

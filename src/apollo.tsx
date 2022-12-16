@@ -1,13 +1,16 @@
 import {
   ApolloClient,
   createHttpLink,
+  from,
   InMemoryCache,
-  ApolloProvider as ApolloProviderBase,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { onError } from "@apollo/client/link/error";
+import { API_URL } from "@constants";
+import { ErrorCode, hasGraphQLErrorCode } from "@error";
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000/graphql",
+  uri: API_URL,
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -23,7 +26,24 @@ const authLink = setContext((_, { headers }) => {
   };
 }).concat(httpLink);
 
+const errorLink = onError(({ graphQLErrors }) => {
+  if (graphQLErrors) {
+    graphQLErrors.map((error) => {
+      const { message, path, extensions } = error;
+      console.error(
+        `[GraphQL error]: ${message}\n Path: ${path}, Code: ${extensions?.code}\n`,
+        error
+      );
+    });
+
+    if (hasGraphQLErrorCode(graphQLErrors, ErrorCode.UNAUTHORIZED)) {
+      localStorage.clear();
+      window.location.href = "/";
+    }
+  }
+});
+
 export const apolloClient = new ApolloClient({
-  link: authLink,
+  link: from([errorLink, authLink]),
   cache: new InMemoryCache(),
 });

@@ -12,21 +12,66 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** Date time */
+  Date: number;
+  /** Decimal */
+  Decimal: any;
+};
+
+export type Bug = {
+  __typename?: 'Bug';
+  description: Scalars['String'];
+  id: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+export type BugOnGame = {
+  __typename?: 'BugOnGame';
+  bugId: Scalars['Int'];
+  gameId: Scalars['ID'];
+};
+
+export type Game = {
+  __typename?: 'Game';
+  bugs?: Maybe<Array<BugOnGame>>;
+  finishedAt?: Maybe<Scalars['Date']>;
+  id: Scalars['ID'];
+  mission?: Maybe<Mission>;
+  score?: Maybe<Scalars['Decimal']>;
+  startedAt: Scalars['Date'];
 };
 
 export type Mission = {
   __typename?: 'Mission';
+  bugs?: Maybe<Array<Bug>>;
   description: Scalars['String'];
   id: Scalars['Int'];
   level: Scalars['Int'];
+  releaseDate?: Maybe<Scalars['Date']>;
+  sourceCode?: Maybe<Array<MissionSourceCode>>;
   title: Scalars['String'];
   type: Scalars['String'];
 };
 
+export type MissionSourceCode = {
+  __typename?: 'MissionSourceCode';
+  id: Scalars['String'];
+  src: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  finishGame: Game;
   health: Scalars['String'];
   loginWithGitHub: TokenResponse;
+  selectBug: Game;
+  startGame: Game;
+  unselectBug: Game;
+};
+
+
+export type MutationFinishGameArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -35,12 +80,36 @@ export type MutationLoginWithGitHubArgs = {
   redirectUrl?: InputMaybe<Scalars['String']>;
 };
 
+
+export type MutationSelectBugArgs = {
+  bugId: Scalars['Int'];
+  gameId: Scalars['ID'];
+};
+
+
+export type MutationStartGameArgs = {
+  missionId: Scalars['Int'];
+};
+
+
+export type MutationUnselectBugArgs = {
+  bugId: Scalars['Int'];
+  gameId: Scalars['ID'];
+};
+
 export type Query = {
   __typename?: 'Query';
+  game?: Maybe<Game>;
   health: Scalars['String'];
   mission?: Maybe<Mission>;
   missionByTypeLevel?: Maybe<Mission>;
   missions: Array<Mission>;
+  missionsByType: Array<Mission>;
+};
+
+
+export type QueryGameArgs = {
+  id?: InputMaybe<Scalars['ID']>;
 };
 
 
@@ -51,6 +120,11 @@ export type QueryMissionArgs = {
 
 export type QueryMissionByTypeLevelArgs = {
   level: Scalars['Int'];
+  type: Scalars['String'];
+};
+
+
+export type QueryMissionsByTypeArgs = {
   type: Scalars['String'];
 };
 
@@ -66,20 +140,27 @@ export type LoginWithGitHubMutationVariables = Exact<{
 
 export type LoginWithGitHubMutation = { __typename?: 'Mutation', loginWithGitHub: { __typename?: 'TokenResponse', access_token: string } };
 
-export type MissionByTypeLevelQueryVariables = Exact<{
+export type GameQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GameQuery = { __typename?: 'Query', game?: { __typename?: 'Game', id: string, startedAt: number, mission?: { __typename?: 'Mission', id: number, title: string, type: string, level: number, description: string } | null } | null };
+
+export type MissionsByTypeQueryVariables = Exact<{
   type: Scalars['String'];
-  level: Scalars['Int'];
 }>;
 
 
-export type MissionByTypeLevelQuery = { __typename?: 'Query', missionByTypeLevel?: { __typename?: 'Mission', id: number, title: string, type: string, level: number, description: string } | null };
+export type MissionsByTypeQuery = { __typename?: 'Query', missionsByType: Array<{ __typename?: 'Mission', id: number, title: string, type: string, level: number, description: string, releaseDate?: number | null }> };
 
-export type MissionsQueryVariables = Exact<{ [key: string]: never; }>;
+export type StartMissionMutationVariables = Exact<{
+  missionId: Scalars['Int'];
+}>;
 
 
-export type MissionsQuery = { __typename?: 'Query', missions: Array<{ __typename?: 'Mission', id: number, title: string, type: string, level: number, description: string }> };
+export type StartMissionMutation = { __typename?: 'Mutation', startGame: { __typename?: 'Game', id: string } };
 
 
 export const LoginWithGitHubDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"loginWithGitHub"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"code"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"loginWithGitHub"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"code"},"value":{"kind":"Variable","name":{"kind":"Name","value":"code"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"}}]}}]}}]} as unknown as DocumentNode<LoginWithGitHubMutation, LoginWithGitHubMutationVariables>;
-export const MissionByTypeLevelDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"missionByTypeLevel"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"level"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"missionByTypeLevel"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}},{"kind":"Argument","name":{"kind":"Name","value":"level"},"value":{"kind":"Variable","name":{"kind":"Name","value":"level"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}}]}}]} as unknown as DocumentNode<MissionByTypeLevelQuery, MissionByTypeLevelQueryVariables>;
-export const MissionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"missions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"missions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}}]}}]} as unknown as DocumentNode<MissionsQuery, MissionsQueryVariables>;
+export const GameDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"game"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"game"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"startedAt"}},{"kind":"Field","name":{"kind":"Name","value":"mission"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}}]}}]}}]} as unknown as DocumentNode<GameQuery, GameQueryVariables>;
+export const MissionsByTypeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"missionsByType"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"missionsByType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"releaseDate"}}]}}]}}]} as unknown as DocumentNode<MissionsByTypeQuery, MissionsByTypeQueryVariables>;
+export const StartMissionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"startMission"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"missionId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startGame"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"missionId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"missionId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<StartMissionMutation, StartMissionMutationVariables>;
