@@ -1,0 +1,89 @@
+.card-clip {
+  clip-path: polygon(
+    5% 0,
+    95% 0,
+    100% 5%,
+    100% 95%,
+    95% 100%,
+    5% 100%,
+    0 95%,
+    0 5%
+  );
+}
+
+.card-bg {
+  background: linear-gradient(
+    180deg,
+    #1f1c1c 0%,
+    #3e3c3c 28%,
+    #1d1919 52%,
+    #272424 100%
+  );
+}
+
+.card-border {
+  background: linear-gradient(180deg, #c7c7c7 0%, #efefef 50%, #5a5a5a 100%);
+}
+
+.card-border.active {
+  background: linear-gradient(180deg, #402d9e 0%, #59bbf8 50%, #6acbf8 100%);
+}
+
+.card-shadow {
+  filter: drop-shadow(-16px -8px 24px rgba(0, 0, 0, 0.24));
+}
+
+.card-shadow.active {
+  filter: drop-shadow(0px 0px 24px #523eb6);
+}
+
+.bug-name-clip {
+  clip-path: polygon(5% 0, 95% 0, 100% 50%, 95% 100%, 5% 100%, 0% 50%);
+}
+
+:root {
+  --bug-bg-from: #fff;
+  --bug-bg-to: #fff;
+}
+
+.bug-bg {
+  background: radial-gradient(
+    50% 65% at 50% 50%,
+    var(--bug-bg-from) 0%,
+    var(--bug-bg-to) 87.67%
+  );
+}
+
+.bug-bg.meetings-addict {
+  --bug-bg-from: #5e248d;
+  --bug-bg-to: #281f30;
+}
+
+.bug-bg.daily-meetings {
+  --bug-bg-from: #8c1753;
+  --bug-bg-to: #36001c;
+}
+
+.bug-bg.blind-detective {
+  --bug-bg-from: #af3d10;
+  --bug-bg-to: #4c1606;
+}
+
+.bug-bg.handler {
+  --bug-bg-from: #c10615;
+  --bug-bg-to: #3b0005;
+}
+
+.bug-bg.corpo-manager {
+  --bug-bg-from: #17b199;
+  --bug-bg-to: #074e41;
+}
+
+.bug-bg.task-overload {
+  --bug-bg-from: #d11100;
+  --bug-bg-to: #201000;
+}
+
+.md-description code {
+  @apply rounded-[4px] border border-[#867770] bg-[#2D231D] px-1 py-[1px] leading-[22px] text-[#FF5C00];
+}

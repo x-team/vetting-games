@@ -1,4 +1,3 @@
-import Card from "@components/Surface/Card";
 import Chip from "@components/DataDisplay/Chip";
 import Button from "@components/Input/Button";
 import { Mission } from "@gql/graphql";

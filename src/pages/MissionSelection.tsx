@@ -7,6 +7,7 @@ import { gamePath, missionSelectionPath } from "@router/paths";
 import { useNavigate, useParams } from "react-router-dom";
 import MissionCard from "@components/Mission/MissionCard";
 import { Mission } from "@gql/graphql";
+import { useEffect } from "react";
 
 type MissionParams = {
   type: string;
@@ -33,6 +34,14 @@ const startMissionDocument = gql(/* GraphQL */ `
   }
 `);
 
+const currentGameDocument = gql(/* GraphQL */ `
+  query currentGame {
+    game {
+      id
+    }
+  }
+`);
+
 const MissionSelectionPage = () => {
   const navigate = useNavigate();
   const { type: typeParam = "js" } = useParams<MissionParams>();
@@ -44,11 +53,12 @@ const MissionSelectionPage = () => {
     variables: { type: typeParam || "" },
     onError: () => navigate(missionSelectionPath()),
   });
+  const { data: gameData, refetch } = useQuery(currentGameDocument);
   const [startMission] = useMutation(startMissionDocument, {
-    onCompleted: () => navigate(gamePath()),
+    onCompleted: (data) => navigate(gamePath(data.startGame.id)),
     onError: ({ graphQLErrors }) => {
       if (hasGraphQLErrorCode(graphQLErrors, ErrorCode.GAME_ALREADY_STARTED)) {
-        navigate(gamePath());
+        refetch();
       }
     },
   });
@@ -57,13 +67,15 @@ const MissionSelectionPage = () => {
     startMission({ variables: { missionId: mission.id } });
   };
 
-  if (loading) {
-    return <div>Loading</div>;
-  }
+  useEffect(() => {
+    if (gameData?.game?.id) {
+      navigate(gamePath(gameData.game.id));
+    }
+  }, [gameData]);
 
-  if (error) {
-    return <div>Error</div>;
-  }
+  if (loading) return <div>Loading</div>;
+
+  if (error) return <div>Error</div>;
 
   return (
     <BasicLayout className="items-center justify-center">

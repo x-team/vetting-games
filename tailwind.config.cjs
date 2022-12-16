@@ -6,6 +6,7 @@ module.exports = {
       teko: ["Teko", "sans-serif"],
       inter: ["Inter", "sans-serif"],
       incosolata: ["Inconsolata", "monospace"],
+      code: ["Source Code Pro", "monospace"],
     },
     colors: {
       neutral: {
@@ -73,5 +74,6 @@ module.exports = {
         },
       });
     },
+    require("tailwind-scrollbar"),
   ],
 };

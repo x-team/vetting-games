@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-key */
 import CallbackPage from "@pages/Callback";
-import GamePage from "@pages/Game";
+import GamePage, { gameLoader } from "@pages/Game";
 import LoginPage from "@pages/Login";
 import LogoutPage from "@pages/Logout";
 import MissionSelection from "@pages/MissionSelection";
@@ -33,7 +33,11 @@ export default createBrowserRouter(
     <Route path={callbackPath()} element={<CallbackPage />} />,
     <Route element={<ProtectedRoute />}>
       <Route path={missionSelectionPath()} element={<MissionSelection />} />
-      <Route path={gamePath()} element={<GamePage />} />
+      <Route
+        path={gamePath(":id")}
+        element={<GamePage />}
+        loader={gameLoader}
+      />
     </Route>,
   ])
 );

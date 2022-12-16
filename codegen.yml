@@ -11,3 +11,4 @@ generates:
     config:
       scalars:
         Date: "number"
+        Decimal: "number"
