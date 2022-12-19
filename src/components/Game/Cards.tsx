@@ -1,4 +1,5 @@
 import { useMutation } from "@apollo/client";
+import Tooltip from "@components/Overlay/Tooltip";
 import {
   GameLoaderData,
   selectBugDocument,
@@ -7,6 +8,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import BugCard, { bugMonsterList } from "./BugCard";
+import CardTooltip from "./CardTooltip";
 
 const CARD_HEIGHT = 420;
 const CARD_WIDTH = 280;
@@ -113,12 +115,16 @@ const Cards = () => {
             }
           }}
         >
-          <BugCard
-            name={name}
-            description={description}
-            selected={selectedBugs.includes(id)}
-            monster={bugMonsterList[index]}
-          />
+          <Tooltip
+            tooltip={<CardTooltip selected={selectedBugs.includes(id)} />}
+          >
+            <BugCard
+              name={name}
+              description={description}
+              selected={selectedBugs.includes(id)}
+              monster={bugMonsterList[index]}
+            />
+          </Tooltip>
         </CardPosition>
       ))}
     </div>
