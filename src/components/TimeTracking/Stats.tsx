@@ -1,4 +1,4 @@
-import Monstah from "@components/Icon/Monstah/Monstah";
+import Monstah, { MonstahMood } from "@components/Icon/Monstah/Monstah";
 import clsx from "clsx";
 import TimeStatCard from "./TimeStatCard";
 
@@ -23,7 +23,7 @@ const Stats = ({ state, task }: StatsProps) => {
       {task !== null && (
         <Monstah
           className="absolute -bottom-4 flex w-full justify-center"
-          mood={TaskMoodMap[task || "active"]}
+          mood={TaskMoodMap[task || "active"] as MonstahMood}
         />
       )}
       <div className="relative -m-4 flex flex-col gap-1 rounded-2xl bg-neutral-900 p-4">

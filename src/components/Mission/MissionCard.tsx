@@ -6,10 +6,11 @@ import { useMemo } from "react";
 
 interface MissionCardProps {
   mission: Mission;
+  loading?: boolean;
   onStart?: (mission: Mission) => void;
 }
 
-const MissionCard = ({ mission, onStart }: MissionCardProps) => {
+const MissionCard = ({ mission, loading, onStart }: MissionCardProps) => {
   const released = useMemo(() => {
     if (!mission.releaseDate) {
       return false;
@@ -44,9 +45,10 @@ const MissionCard = ({ mission, onStart }: MissionCardProps) => {
         <Button
           variant="contained"
           className="self-end uppercase"
+          isDisabled={loading}
           onPress={handleStart}
         >
-          Start Mission
+          {loading ? "Loading..." : "Start Mission"}
         </Button>
       )}
     </div>
