@@ -4,6 +4,7 @@ import GamePage, { gameLoader } from "@pages/Game";
 import LoginPage from "@pages/Login";
 import LogoutPage from "@pages/Logout";
 import MissionSelection from "@pages/MissionSelection";
+import ScoreboardPage from "@pages/Scoreboard";
 import TimeTrackingPage from "@pages/TimeTracking";
 import {
   createBrowserRouter,
@@ -18,6 +19,7 @@ import {
   loginPath,
   logoutPath,
   missionSelectionPath,
+  scoreboardPath,
   timeTrackingPath,
 } from "./paths";
 import ProtectedRoute from "./ProtectedRoute";
@@ -37,6 +39,10 @@ export default createBrowserRouter(
         path={gamePath(":id")}
         element={<GamePage />}
         loader={gameLoader}
+      />
+      <Route
+        path={scoreboardPath(":missionId", ":gameId")}
+        element={<ScoreboardPage />}
       />
     </Route>,
   ])

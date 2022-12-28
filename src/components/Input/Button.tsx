@@ -69,10 +69,12 @@ function Button(
         !(noPadding || noPaddingX) && "px-10",
         !(noPadding || noPaddingY) && "py-5",
         {
-          "border-blue-600 bg-blue-600 hover:border-blue-800 hover:bg-blue-800":
+          "border-blue-600 bg-blue-600 disabled:border-blue-800 disabled:bg-blue-800 hover:border-blue-800 hover:bg-blue-800":
             variant === "contained",
-          "border-neutral-400 hover:border-neutral-200": variant === "outlined",
-          "border-transparent hover:border-b-neutral-200": variant === "text",
+          "border-neutral-400 disabled:border-neutral-200 hover:border-neutral-200":
+            variant === "outlined",
+          "border-transparent disabled:border-b-neutral-200 hover:border-b-neutral-200":
+            variant === "text",
         },
         className
       )}

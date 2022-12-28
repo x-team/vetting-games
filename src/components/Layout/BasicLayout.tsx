@@ -33,7 +33,7 @@ const BasicLayout = ({
     <div
       {...props}
       className={clsx(
-        "bg-stone-200 flex h-screen w-screen flex-col",
+        "bg-stone-200 flex h-screen w-screen flex-col overflow-auto",
         containerClassName
       )}
     >
