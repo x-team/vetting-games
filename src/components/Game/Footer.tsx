@@ -1,5 +1,4 @@
 import { useMutation } from "@apollo/client";
-import Button from "@components/Input/Button";
 import {
   finishGameDocument,
   GameLoaderData,
@@ -7,6 +6,7 @@ import {
 } from "@pages/Game";
 import { scoreboardPath } from "@router/paths";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
+import FinishTrigger from "./FinishTrigger";
 import HelpTrigger from "./HelpTrigger";
 import Timer from "./Timer";
 
@@ -24,18 +24,17 @@ const Footer = () => {
       navigate(scoreboardPath(missionId.toString(), gameId)),
   });
 
+  const handleFinish = () => {
+    id && finishGame({ variables: { id } });
+  };
+
   return (
     <div className="flex justify-end">
       <div className="flex flex-col gap-6">
         <Timer />
         <div className="flex gap-2">
           <HelpTrigger />
-          <Button
-            variant="contained"
-            onPress={() => id && finishGame({ variables: { id } })}
-          >
-            Finish
-          </Button>
+          <FinishTrigger onConfirm={handleFinish} />
         </div>
       </div>
     </div>
