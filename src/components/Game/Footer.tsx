@@ -30,7 +30,7 @@ const Footer = () => {
 
   return (
     <div className="flex justify-end">
-      <div className="flex flex-col gap-6">
+      <div data-tour="footer" className="flex flex-col gap-6">
         <Timer />
         <div className="flex gap-2">
           <HelpTrigger />

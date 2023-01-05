@@ -94,7 +94,7 @@ const CodeWindow = () => {
   if (!sourceCode.length) return null;
 
   return (
-    <Window items={codeTabs}>
+    <Window id="code" items={codeTabs}>
       {(item) => <Item title={item.title}>{item.content}</Item>}
     </Window>
   );
