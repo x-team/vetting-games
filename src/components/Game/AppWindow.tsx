@@ -4,7 +4,7 @@ import { Item } from "react-stately";
 
 const AppWindow = () => {
   return (
-    <Window>
+    <Window id="app">
       <Item key="App" title="ShadowCorp: Always watching over you">
         <TimeTrackingControls bugged={false} />
       </Item>

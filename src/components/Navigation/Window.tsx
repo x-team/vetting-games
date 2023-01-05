@@ -55,13 +55,16 @@ export function WindowContent({ state, ...props }: TabPanelProps) {
   );
 }
 
-const Window = (props: TabListProps<TabNode>) => {
+const Window = (props: TabListProps<TabNode> & { id?: string }) => {
   const ref = useRef<HTMLDivElement>(null);
   const state = useTabListState(props);
   const { tabListProps } = useTabList(props, state, ref);
 
   return (
-    <div className="flex w-full flex-1 flex-col rounded-md border-[3px] bg-black">
+    <div
+      data-tour={`window-${props.id}`}
+      className="flex w-full flex-1 flex-col rounded-md border-[3px] bg-black"
+    >
       <div className="flex h-12">
         <div className="mx-4 flex items-center gap-2">
           <div className="h-3 w-3 rounded-full bg-[#ED4245]"></div>
@@ -71,6 +74,7 @@ const Window = (props: TabListProps<TabNode>) => {
         <div
           ref={ref}
           {...tabListProps}
+          data-tour={`window-tab-${props.id}`}
           className="flex flex-1 gap-[2px] overflow-auto"
         >
           {[...state.collection].map((item) => (
