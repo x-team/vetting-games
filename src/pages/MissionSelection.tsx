@@ -7,7 +7,7 @@ import { gamePath, missionSelectionPath } from "@router/paths";
 import { useNavigate, useParams } from "react-router-dom";
 import MissionCard from "@components/Mission/MissionCard";
 import { Mission } from "@gql/graphql";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type MissionParams = {
   type: string;
@@ -54,16 +54,21 @@ const MissionSelectionPage = () => {
     onError: () => navigate(missionSelectionPath()),
   });
   const { data: gameData, refetch } = useQuery(currentGameDocument);
+  const [missionSelected, setMissionSelected] = useState<number | null>(null);
   const [startMission] = useMutation(startMissionDocument, {
     onCompleted: (data) => navigate(gamePath(data.startGame.id)),
     onError: ({ graphQLErrors }) => {
       if (hasGraphQLErrorCode(graphQLErrors, ErrorCode.GAME_ALREADY_STARTED)) {
         refetch();
+        return;
       }
+
+      setMissionSelected(null);
     },
   });
   const missions = missionData?.missionsByType;
   const handleStart = (mission: Mission) => {
+    setMissionSelected(mission.id);
     startMission({ variables: { missionId: mission.id } });
   };
 
@@ -86,6 +91,7 @@ const MissionSelectionPage = () => {
             <MissionCard
               key={mission.id}
               mission={mission}
+              loading={missionSelected === mission.id}
               onStart={handleStart}
             />
           ))}

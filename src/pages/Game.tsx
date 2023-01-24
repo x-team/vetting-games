@@ -62,7 +62,6 @@ export const finishGameDocument = gql(/* GraphQL */ `
   mutation finishGame($id: ID!) {
     finishGame(id: $id) {
       id
-      score
       finishedAt
     }
   }
