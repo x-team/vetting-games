@@ -10,11 +10,11 @@ import { useLoaderData } from "react-router-dom";
 import BugCard, { bugMonsterList } from "./BugCard";
 import CardTooltip from "./CardTooltip";
 
-const CARD_HEIGHT = 420;
+const CARD_ON_HAND_HEIGHT = 160;
+const CARD_HEIGHT = 420 - CARD_ON_HAND_HEIGHT;
 const CARD_WIDTH = 280;
 const CARD_GAP = CARD_WIDTH / 2;
 const CARD_PUSH_DISTANCE = 110;
-const CARD_ON_HAND_HEIGHT = 160;
 const CARDS_ON_HAND = 6;
 
 function calculateCardXPosition(index: number, hoveredIndex: number | null) {
@@ -28,7 +28,7 @@ function calculateCardXPosition(index: number, hoveredIndex: number | null) {
 }
 
 function calculateCardYPosition(index: number, hoveredIndex: number | null) {
-  return index === hoveredIndex ? -CARD_HEIGHT : -CARD_ON_HAND_HEIGHT;
+  return index === hoveredIndex ? -CARD_HEIGHT : 0;
 }
 
 function calculateCardRotation(index: number, hoveredIndex: number | null) {
@@ -91,7 +91,10 @@ const Cards = () => {
   }, [gameData?.game?.bugs]);
 
   return (
-    <div className="absolute bottom-0 left-10 flex gap-2">
+    <div
+      data-tour="cards"
+      className="absolute bottom-0 left-10 flex h-[160px] w-[940px] gap-2"
+    >
       {bugs?.map(({ id, name, description }, index) => (
         <CardPosition
           key={index}
