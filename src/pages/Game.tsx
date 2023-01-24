@@ -8,6 +8,7 @@ import { GameQuery } from "@gql/graphql";
 import Footer from "@components/Game/Footer";
 import WindowsSection from "@components/Game/WindowsSection";
 import Cards from "@components/Game/Cards";
+import GameTour from "@components/Game/GameTour";
 
 export const gameDocument = gql(/* GraphQL */ `
   query game($id: ID!) {
@@ -31,6 +32,13 @@ export const gameDocument = gql(/* GraphQL */ `
       }
       bugs {
         bugId
+      }
+    }
+    me {
+      settings {
+        gameSettings {
+          showTutorial
+        }
       }
     }
   }
@@ -63,6 +71,18 @@ export const finishGameDocument = gql(/* GraphQL */ `
     finishGame(id: $id) {
       id
       finishedAt
+    }
+  }
+`);
+
+export const updateGameSettingsDocument = gql(/* GraphQL */ `
+  mutation updateGameSettings($showTutorial: Boolean!) {
+    updateSettings(
+      settings: { gameSettings: { showTutorial: $showTutorial } }
+    ) {
+      gameSettings {
+        showTutorial
+      }
     }
   }
 `);
@@ -122,6 +142,7 @@ const GamePage = () => {
       <WindowsSection />
       <Footer />
       <Cards />
+      <GameTour />
     </BasicLayout>
   );
 };
