@@ -79,7 +79,7 @@ const Cards = () => {
   const [selectBug] = useMutation(selectBugDocument);
   const [unselectBug] = useMutation(unselectBugDocument);
 
-  const bugs = gameData?.game?.mission?.bugs;
+  const bugTypes = gameData?.game?.mission?.bugTypes;
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [selectedBugs, setSelectedBugs] = useState<number[]>([]);
@@ -87,15 +87,17 @@ const Cards = () => {
   useEffect(() => {
     if (!gameData?.game?.id) return;
 
-    setSelectedBugs(gameData?.game?.bugs?.map(({ bugId }) => bugId) || []);
-  }, [gameData?.game?.bugs]);
+    setSelectedBugs(
+      gameData?.game?.pickedBugs?.map((bug) => bug.bugTypeId) || []
+    );
+  }, [gameData?.game?.pickedBugs]);
 
   return (
     <div
       data-tour="cards"
       className="absolute bottom-0 left-10 flex h-[160px] w-[940px] gap-2"
     >
-      {bugs?.map(({ id, name, description }, index) => (
+      {bugTypes?.map(({ id, name, description }, index) => (
         <CardPosition
           key={index}
           index={index}
@@ -107,12 +109,12 @@ const Cards = () => {
 
             if (selectedBugs.includes(id)) {
               unselectBug({
-                variables: { gameId: gameData?.game?.id, bugId: id },
+                variables: { gameId: gameData?.game?.id, bugTypeId: id },
               });
               setSelectedBugs(selectedBugs.filter((i) => i !== id));
             } else {
               selectBug({
-                variables: { gameId: gameData?.game?.id, bugId: id },
+                variables: { gameId: gameData?.game?.id, bugTypeId: id },
               });
               setSelectedBugs([...selectedBugs, id]);
             }
@@ -122,7 +124,7 @@ const Cards = () => {
             tooltip={<CardTooltip selected={selectedBugs.includes(id)} />}
           >
             <BugCard
-              name={name}
+              name={`${name} Error`}
               description={description}
               selected={selectedBugs.includes(id)}
               monster={bugMonsterList[index]}

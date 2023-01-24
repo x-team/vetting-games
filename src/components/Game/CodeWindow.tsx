@@ -7,7 +7,7 @@ import "prismjs/themes/prism-tomorrow.min.css";
 
 import Window from "@components/Navigation/Window";
 import { GameLoaderData } from "@pages/Game";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useLoaderData } from "react-router-dom";
 import Editor from "react-simple-code-editor";
 import { Item } from "react-stately";
@@ -28,45 +28,28 @@ const fetchMissionCode = async (
   return res.text();
 };
 
-const fetchSourceCodes = async (
-  type: string,
-  level: number,
-  sourceFiles: string[]
-): Promise<SourceCode[]> => {
-  const files = await Promise.all(
-    sourceFiles.map((file) => fetchMissionCode(type, level, file))
-  );
-
-  return sourceFiles.map((file, index) => {
-    const [name, ext] = sourceFiles[index].split(".");
-    return {
-      ext: ext || "js",
-      src: file,
-      name: name || "index",
-      content: files[index],
-    };
-  });
-};
-
 const useSourceCode = () => {
   const { data: gameData } = useLoaderData() as GameLoaderData;
-  const [sourceCode, setSourceCode] = useState<SourceCode[]>([]);
 
   const type = gameData?.game?.mission?.type;
   const level = gameData?.game?.mission?.level;
-  const sourceFiles = gameData?.game?.mission?.sourceCode;
+  return useMemo<SourceCode[]>(() => {
+    if (!type || !level) return [];
 
-  useEffect(() => {
-    if (!type || !level || !sourceFiles) return;
+    const files = gameData?.gameFiles;
 
-    fetchSourceCodes(
-      type,
-      level,
-      sourceFiles.map((file) => file.src)
-    ).then((files) => setSourceCode(files));
-  }, [type, level, sourceFiles]);
+    if (!files) return [];
 
-  return sourceCode;
+    return files.map((file) => {
+      const [name, ext] = file.name.split(".");
+      return {
+        ext: ext || "js",
+        src: file.name,
+        name: name || "index",
+        content: file.content,
+      };
+    });
+  }, [gameData?.gameFiles, type, level]);
 };
 
 const CodeWindow = () => {

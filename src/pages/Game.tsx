@@ -21,18 +21,20 @@ export const gameDocument = gql(/* GraphQL */ `
         type
         level
         description
-        sourceCode {
-          src
-        }
-        bugs {
+        bugTypes {
           id
           name
           description
         }
       }
-      bugs {
-        bugId
+      pickedBugs {
+        bugTypeId
       }
+    }
+    gameFiles(gameId: $id) {
+      id
+      name
+      content
     }
     me {
       settings {
@@ -45,22 +47,22 @@ export const gameDocument = gql(/* GraphQL */ `
 `);
 
 export const selectBugDocument = gql(/* GraphQL */ `
-  mutation selectBug($gameId: ID!, $bugId: Int!) {
-    selectBug(gameId: $gameId, bugId: $bugId) {
+  mutation selectBug($gameId: ID!, $bugTypeId: Int!) {
+    selectBug(gameId: $gameId, bugTypeId: $bugTypeId) {
       id
-      bugs {
-        bugId
+      pickedBugs {
+        bugTypeId
       }
     }
   }
 `);
 
 export const unselectBugDocument = gql(/* GraphQL */ `
-  mutation unselectBug($gameId: ID!, $bugId: Int!) {
-    unselectBug(gameId: $gameId, bugId: $bugId) {
+  mutation unselectBug($gameId: ID!, $bugTypeId: Int!) {
+    unselectBug(gameId: $gameId, bugTypeId: $bugTypeId) {
       id
-      bugs {
-        bugId
+      pickedBugs {
+        bugTypeId
       }
     }
   }

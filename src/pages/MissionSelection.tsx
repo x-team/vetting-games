@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import MissionCard from "@components/Mission/MissionCard";
 import { Mission } from "@gql/graphql";
 import { useEffect, useState } from "react";
+import LoadingPage from "./Loading";
 
 type MissionParams = {
   type: string;
@@ -52,8 +53,11 @@ const MissionSelectionPage = () => {
   } = useQuery(missionDocument, {
     variables: { type: typeParam || "" },
     onError: () => navigate(missionSelectionPath()),
+    fetchPolicy: "cache-and-network",
   });
-  const { data: gameData, refetch } = useQuery(currentGameDocument);
+  const { data: gameData, refetch } = useQuery(currentGameDocument, {
+    fetchPolicy: "network-only",
+  });
   const [missionSelected, setMissionSelected] = useState<number | null>(null);
   const [startMission] = useMutation(startMissionDocument, {
     onCompleted: (data) => navigate(gamePath(data.startGame.id)),
@@ -78,9 +82,9 @@ const MissionSelectionPage = () => {
     }
   }, [gameData]);
 
-  if (loading) return <div>Loading</div>;
+  if (loading) return <LoadingPage />;
 
-  if (error) return <div>Error</div>;
+  if (error) return <LoadingPage />;
 
   return (
     <BasicLayout className="items-center justify-center">
