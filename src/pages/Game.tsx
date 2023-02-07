@@ -9,6 +9,7 @@ import Footer from "@components/Game/Footer";
 import WindowsSection from "@components/Game/WindowsSection";
 import Cards from "@components/Game/Cards";
 import GameTour from "@components/Game/GameTour";
+import { GameTourProvider } from "@components/Game/GameTourContext";
 
 export const gameDocument = gql(/* GraphQL */ `
   query game($id: ID!) {
@@ -141,10 +142,12 @@ const GamePage = () => {
       className="relative flex-col gap-14 overflow-hidden p-6"
       containerClassName="max-h-screen"
     >
-      <WindowsSection />
-      <Footer />
-      <Cards />
-      <GameTour />
+      <GameTourProvider>
+        <WindowsSection />
+        <Footer />
+        <Cards />
+        <GameTour />
+      </GameTourProvider>
     </BasicLayout>
   );
 };
