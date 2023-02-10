@@ -1,4 +1,6 @@
 import { useMutation } from "@apollo/client";
+import HelpIcon from "@components/Icon/HelpIcon";
+import Button from "@components/Input/Button";
 import {
   finishGameDocument,
   GameLoaderData,
@@ -7,7 +9,7 @@ import {
 import { scoreboardPath } from "@router/paths";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import FinishTrigger from "./FinishTrigger";
-import HelpTrigger from "./HelpTrigger";
+import { useGameTour } from "./GameTourContext";
 import Timer from "./Timer";
 
 const Footer = () => {
@@ -16,6 +18,7 @@ const Footer = () => {
   const { id } = useParams<keyof GamePageParams>();
   const missionId = data?.game?.mission?.id;
   const gameId = data?.game?.id;
+  const { setTourActive } = useGameTour();
 
   const [finishGame] = useMutation(finishGameDocument, {
     onCompleted: () =>
@@ -33,7 +36,9 @@ const Footer = () => {
       <div data-tour="footer" className="flex flex-col gap-6">
         <Timer />
         <div className="flex gap-2">
-          <HelpTrigger />
+          <Button variant="outlined" onPress={() => setTourActive(true)}>
+            Help <HelpIcon className="w-5" />
+          </Button>
           <FinishTrigger onConfirm={handleFinish} />
         </div>
       </div>
