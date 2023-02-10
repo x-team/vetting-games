@@ -5,6 +5,7 @@ import ScoreboardMessage from "@components/Scoreboard/ScoreboardMessage";
 import ScoreboardTable from "@components/Scoreboard/ScoreboardTable";
 import { gql } from "@gql";
 import { useParams } from "react-router-dom";
+import LoadingPage from "./Loading";
 
 const scoreboardDocument = gql(/* GraphQL */ `
   query scoreboard(
@@ -41,7 +42,7 @@ export interface ScoreboardPageParams {
 
 const ScoreboardPage = () => {
   const params = useParams<keyof ScoreboardPageParams>();
-  const { data } = useQuery(scoreboardDocument, {
+  const { data, loading } = useQuery(scoreboardDocument, {
     variables: {
       missionId: parseInt(params.missionId || "1"),
       gameId: params.gameId || "",
@@ -51,8 +52,11 @@ const ScoreboardPage = () => {
       },
     },
     skip: !params.missionId || !params.gameId,
+    fetchPolicy: "cache-and-network",
   });
   const failed = data?.game?.score !== 1;
+
+  if (loading) return <LoadingPage />;
 
   return (
     <BasicLayout

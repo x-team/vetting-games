@@ -4,9 +4,9 @@ import useQuerySelectorObserver from "@utils/useQuerySelectorObserver";
 import { useMemo, useState } from "react";
 
 export interface TourStep {
-  target: string;
   title: string;
   content: string;
+  target: string;
   placement?: "top" | "bottom" | "left" | "right";
   highlightPadding?: number;
 }
@@ -55,6 +55,7 @@ export default function useTour({
   const startTour = () => setIsTourActive(true);
   const stopTour = () => {
     setIsTourActive(false);
+    setCurrentStep(0);
     onStop?.();
   };
   const nextStep = () => {

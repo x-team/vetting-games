@@ -18,27 +18,37 @@ export type Scalars = {
   Decimal: number;
 };
 
-export type Bug = {
-  __typename?: 'Bug';
+export type BugType = {
+  __typename?: 'BugType';
   description: Scalars['String'];
   id: Scalars['Int'];
   name: Scalars['String'];
 };
 
-export type BugOnGame = {
-  __typename?: 'BugOnGame';
-  bugId: Scalars['Int'];
-  gameId: Scalars['ID'];
+export type File = {
+  __typename?: 'File';
+  content: Scalars['String'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
 };
 
 export type Game = {
   __typename?: 'Game';
-  bugs?: Maybe<Array<BugOnGame>>;
   finishedAt?: Maybe<Scalars['Date']>;
   id: Scalars['ID'];
   mission?: Maybe<Mission>;
+  pickedBugs?: Maybe<Array<GameBug>>;
+  /** Score value between 0 and 1 */
   score?: Maybe<Scalars['Decimal']>;
   startedAt: Scalars['Date'];
+};
+
+export type GameBug = {
+  __typename?: 'GameBug';
+  bugType?: Maybe<BugType>;
+  bugTypeId: Scalars['Int'];
+  game?: Maybe<Game>;
+  gameId: Scalars['ID'];
 };
 
 export type GameSettings = {
@@ -52,30 +62,33 @@ export type GameSettingsInput = {
 
 export type Mission = {
   __typename?: 'Mission';
-  bugs?: Maybe<Array<Bug>>;
+  bugTypes?: Maybe<Array<BugType>>;
   description: Scalars['String'];
   id: Scalars['Int'];
   level: Scalars['Int'];
   releaseDate?: Maybe<Scalars['Date']>;
-  sourceCode?: Maybe<Array<MissionSourceCode>>;
   title: Scalars['String'];
   type: Scalars['String'];
 };
 
-export type MissionSourceCode = {
-  __typename?: 'MissionSourceCode';
-  id: Scalars['String'];
-  src: Scalars['String'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Player finishes a game */
   finishGame: Game;
   health: Scalars['String'];
+  /**
+   * Login with GitHub
+   *
+   * Requires the code from the GitHub OAuth flow and the redirect URL
+   */
   loginWithGitHub: TokenResponse;
+  /** Player selects a bug type for a game */
   selectBug: Game;
+  /** Player starts a game */
   startGame: Game;
+  /** Player unselects a bug type for a game */
   unselectBug: Game;
+  /** Update the settings of the user */
   updateSettings: Settings;
 };
 
@@ -92,7 +105,7 @@ export type MutationLoginWithGitHubArgs = {
 
 
 export type MutationSelectBugArgs = {
-  bugId: Scalars['Int'];
+  bugTypeId: Scalars['Int'];
   gameId: Scalars['ID'];
 };
 
@@ -103,7 +116,7 @@ export type MutationStartGameArgs = {
 
 
 export type MutationUnselectBugArgs = {
-  bugId: Scalars['Int'];
+  bugTypeId: Scalars['Int'];
   gameId: Scalars['ID'];
 };
 
@@ -114,21 +127,33 @@ export type MutationUpdateSettingsArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Get a game by id */
   game?: Maybe<Game>;
+  /** Get all files for a game (including bugs) */
+  gameFiles: Array<File>;
+  /** Get the scoreboard position of the user */
   getScoreboardPosition: Scalars['Int'];
   health: Scalars['String'];
+  /** Get the current user */
   me: User;
   mission?: Maybe<Mission>;
   missionByTypeLevel?: Maybe<Mission>;
   missions: Array<Mission>;
   missionsByType: Array<Mission>;
+  /** Get a scoreboard by mission id */
   scoreboard?: Maybe<Scoreboard>;
+  /** Get all scoreboards by mission id */
   scoreboards: Array<Scoreboard>;
 };
 
 
 export type QueryGameArgs = {
   id?: InputMaybe<Scalars['ID']>;
+};
+
+
+export type QueryGameFilesArgs = {
+  gameId: Scalars['ID'];
 };
 
 
@@ -187,6 +212,7 @@ export type SettingsInput = {
   gameSettings?: InputMaybe<GameSettingsInput>;
 };
 
+/** Response from GitHub login */
 export type TokenResponse = {
   __typename?: 'TokenResponse';
   access_token: Scalars['String'];
@@ -225,23 +251,23 @@ export type GameQueryVariables = Exact<{
 }>;
 
 
-export type GameQuery = { __typename?: 'Query', game?: { __typename?: 'Game', id: string, startedAt: number, mission?: { __typename?: 'Mission', id: number, title: string, type: string, level: number, description: string, sourceCode?: Array<{ __typename?: 'MissionSourceCode', src: string }> | null, bugs?: Array<{ __typename?: 'Bug', id: number, name: string, description: string }> | null } | null, bugs?: Array<{ __typename?: 'BugOnGame', bugId: number }> | null } | null, me: { __typename?: 'User', settings?: { __typename?: 'Settings', gameSettings?: { __typename?: 'GameSettings', showTutorial: boolean } | null } | null } };
+export type GameQuery = { __typename?: 'Query', game?: { __typename?: 'Game', id: string, startedAt: number, mission?: { __typename?: 'Mission', id: number, title: string, type: string, level: number, description: string, bugTypes?: Array<{ __typename?: 'BugType', id: number, name: string, description: string }> | null } | null, pickedBugs?: Array<{ __typename?: 'GameBug', bugTypeId: number }> | null } | null, gameFiles: Array<{ __typename?: 'File', id: string, name: string, content: string }>, me: { __typename?: 'User', settings?: { __typename?: 'Settings', gameSettings?: { __typename?: 'GameSettings', showTutorial: boolean } | null } | null } };
 
 export type SelectBugMutationVariables = Exact<{
   gameId: Scalars['ID'];
-  bugId: Scalars['Int'];
+  bugTypeId: Scalars['Int'];
 }>;
 
 
-export type SelectBugMutation = { __typename?: 'Mutation', selectBug: { __typename?: 'Game', id: string, bugs?: Array<{ __typename?: 'BugOnGame', bugId: number }> | null } };
+export type SelectBugMutation = { __typename?: 'Mutation', selectBug: { __typename?: 'Game', id: string, pickedBugs?: Array<{ __typename?: 'GameBug', bugTypeId: number }> | null } };
 
 export type UnselectBugMutationVariables = Exact<{
   gameId: Scalars['ID'];
-  bugId: Scalars['Int'];
+  bugTypeId: Scalars['Int'];
 }>;
 
 
-export type UnselectBugMutation = { __typename?: 'Mutation', unselectBug: { __typename?: 'Game', id: string, bugs?: Array<{ __typename?: 'BugOnGame', bugId: number }> | null } };
+export type UnselectBugMutation = { __typename?: 'Mutation', unselectBug: { __typename?: 'Game', id: string, pickedBugs?: Array<{ __typename?: 'GameBug', bugTypeId: number }> | null } };
 
 export type FinishGameMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -287,9 +313,9 @@ export type ScoreboardQuery = { __typename?: 'Query', getScoreboardPosition: num
 
 
 export const LoginWithGitHubDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"loginWithGitHub"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"code"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"loginWithGitHub"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"code"},"value":{"kind":"Variable","name":{"kind":"Name","value":"code"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"}}]}}]}}]} as unknown as DocumentNode<LoginWithGitHubMutation, LoginWithGitHubMutationVariables>;
-export const GameDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"game"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"game"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"startedAt"}},{"kind":"Field","name":{"kind":"Name","value":"mission"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"sourceCode"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"src"}}]}},{"kind":"Field","name":{"kind":"Name","value":"bugs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"bugs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bugId"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"settings"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"gameSettings"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"showTutorial"}}]}}]}}]}}]}}]} as unknown as DocumentNode<GameQuery, GameQueryVariables>;
-export const SelectBugDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"selectBug"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"gameId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"bugId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"selectBug"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"gameId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"gameId"}}},{"kind":"Argument","name":{"kind":"Name","value":"bugId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"bugId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"bugs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bugId"}}]}}]}}]}}]} as unknown as DocumentNode<SelectBugMutation, SelectBugMutationVariables>;
-export const UnselectBugDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"unselectBug"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"gameId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"bugId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unselectBug"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"gameId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"gameId"}}},{"kind":"Argument","name":{"kind":"Name","value":"bugId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"bugId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"bugs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bugId"}}]}}]}}]}}]} as unknown as DocumentNode<UnselectBugMutation, UnselectBugMutationVariables>;
+export const GameDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"game"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"game"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"startedAt"}},{"kind":"Field","name":{"kind":"Name","value":"mission"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"bugTypes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pickedBugs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bugTypeId"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"gameFiles"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"gameId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"content"}}]}},{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"settings"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"gameSettings"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"showTutorial"}}]}}]}}]}}]}}]} as unknown as DocumentNode<GameQuery, GameQueryVariables>;
+export const SelectBugDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"selectBug"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"gameId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"bugTypeId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"selectBug"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"gameId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"gameId"}}},{"kind":"Argument","name":{"kind":"Name","value":"bugTypeId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"bugTypeId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pickedBugs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bugTypeId"}}]}}]}}]}}]} as unknown as DocumentNode<SelectBugMutation, SelectBugMutationVariables>;
+export const UnselectBugDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"unselectBug"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"gameId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"bugTypeId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unselectBug"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"gameId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"gameId"}}},{"kind":"Argument","name":{"kind":"Name","value":"bugTypeId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"bugTypeId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pickedBugs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bugTypeId"}}]}}]}}]}}]} as unknown as DocumentNode<UnselectBugMutation, UnselectBugMutationVariables>;
 export const FinishGameDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"finishGame"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"finishGame"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"finishedAt"}}]}}]}}]} as unknown as DocumentNode<FinishGameMutation, FinishGameMutationVariables>;
 export const UpdateGameSettingsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateGameSettings"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"showTutorial"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateSettings"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"settings"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"gameSettings"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"showTutorial"},"value":{"kind":"Variable","name":{"kind":"Name","value":"showTutorial"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"gameSettings"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"showTutorial"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateGameSettingsMutation, UpdateGameSettingsMutationVariables>;
 export const MissionsByTypeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"missionsByType"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"missionsByType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"releaseDate"}}]}}]}}]} as unknown as DocumentNode<MissionsByTypeQuery, MissionsByTypeQueryVariables>;
