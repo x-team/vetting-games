@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@apollo/client";
 import Card from "@components/Surface/Card";
-import { ErrorCode, hasGraphQLErrorCode } from "@error";
+import { ErrorCode, hasGraphQLErrorCode } from "@utils/error";
 import { gql } from "@gql";
 import BasicLayout from "@components/Layout/BasicLayout";
 import { gamePath, missionSelectionPath } from "@router/paths";

@@ -7,7 +7,7 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import { API_URL } from "@constants";
-import { ErrorCode, hasGraphQLErrorCode } from "@error";
+import { ErrorCode, hasGraphQLErrorCode } from "@utils/error";
 
 const httpLink = createHttpLink({
   uri: API_URL,
